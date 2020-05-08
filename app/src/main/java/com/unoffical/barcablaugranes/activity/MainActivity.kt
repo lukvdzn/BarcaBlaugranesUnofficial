@@ -1,7 +1,9 @@
-package com.unoffical.barcablaugranes
+package com.unoffical.barcablaugranes.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.unoffical.barcablaugranes.fragments.MainEntryPageFragment
+import com.unoffical.barcablaugranes.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -10,7 +12,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, MainEntryPageFragment())
+            replace(
+                R.id.fragment_container,
+                MainEntryPageFragment()
+            )
             commit()
         }
     }

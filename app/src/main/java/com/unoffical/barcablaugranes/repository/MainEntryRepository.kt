@@ -1,15 +1,48 @@
-package com.unoffical.barcablaugranes
+package com.unoffical.barcablaugranes.repository
 
+import com.unoffical.barcablaugranes.model.PostCategory
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
-class JsoupParser(private val mainUrl: String) {
+class MainEntryRepository private constructor() {
 
-    fun handleMainPage(): List<PostCategory> {
-        val document: Document = Jsoup.connect(mainUrl).get();
-        return getMainFivePostList(document) + getLatestStoryPostList(document)
+    private val url = "https://www.barcablaugranes.com/"
+    private var dataList: List<PostCategory> = emptyList()
+
+    // Singleton
+    companion object {
+        private var instance: MainEntryRepository? = null
+        fun getInstance() : MainEntryRepository {
+            if (instance == null) {
+                synchronized(MainEntryRepository) {
+                    instance = MainEntryRepository()
+                }
+            }
+            return instance!!
+        }
+    }
+
+    fun getMainPosts(onCompletion: (List<PostCategory>) -> Unit) {
+        if (dataList.isEmpty()) {
+            doAsync {
+                dataList = update()
+                uiThread {
+                    onCompletion(dataList)
+                }
+            }
+        } else {
+            onCompletion(dataList)
+        }
+    }
+
+    private fun update(): List<PostCategory> {
+        val document: Document = Jsoup.connect(url).get();
+        dataList = getMainFivePostList(document) + getLatestStoryPostList(document)
+        return dataList
     }
 
     private fun getMainFivePostList(document: Document): List<PostCategory> {
@@ -41,8 +74,15 @@ class JsoupParser(private val mainUrl: String) {
                 this.selectFirst(titleTag)?.attr("href")?.let { linkToPost = it }
                 this.selectFirst(titleTag)?.text()?.let { title = it }
             }
-            list.add(MainFivePost(title, author, commentsCount, linkToPost, linkToImage))
+
+            list.add(
+                PostCategory.MainFivePost(
+                    title, author, commentsCount,
+                    linkToPost, linkToImage
+                )
+            )
         }
+
         return list
     }
 
@@ -65,9 +105,9 @@ class JsoupParser(private val mainUrl: String) {
 
             for (latestStory: Element in latestStories) {
                 var linkToPost: String? = null
+                var commentsCount: String = "0"
                 var title: String = alternativeContent
                 var author: String = alternativeContent
-                var commentsCount: String = alternativeContent
                 var time: String = alternativeContent
                 var summary: String = alternativeContent
 
@@ -82,10 +122,14 @@ class JsoupParser(private val mainUrl: String) {
                 latestStory.selectFirst(commentsCountTag)?.let { commentsCount = it.text() }
                 latestStory.selectFirst(descriptionTag)?.let { summary = it.text() }
 
-                list.add(LatestStoryPost(title, author, commentsCount, linkToPost, summary, time))
+                list.add(
+                    PostCategory.LatestStoryPost(
+                        title, author, commentsCount, linkToPost,
+                        summary, time
+                    )
+                )
             }
         }
-
         return list
     }
 }

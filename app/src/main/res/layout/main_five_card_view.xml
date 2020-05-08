@@ -25,7 +25,8 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toTopOf="parent"
+            android:transitionName="@string/main_five_post_page_transition"/>
 
 
         <!-- POST TITLE TEXT VIEW -->

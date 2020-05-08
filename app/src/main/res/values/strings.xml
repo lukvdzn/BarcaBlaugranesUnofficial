@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">BBUnoffical</string>
-    <string name="main_url">https://www.barcablaugranes.com/</string>
+    <string name="comment_url_request_template">https://www.barcablaugranes.com/comments/load_comments/</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="main_five_post_page_transition">transition_main_five_to_post_page</string>
+    <string name="comments">Comments</string>
 </resources>
