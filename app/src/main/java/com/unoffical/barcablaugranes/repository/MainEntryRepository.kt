@@ -1,8 +1,8 @@
 package com.unoffical.barcablaugranes.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.unoffical.barcablaugranes.model.PostCategory
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -11,7 +11,7 @@ import org.jsoup.select.Elements
 class MainEntryRepository private constructor() {
 
     private val url = "https://www.barcablaugranes.com/"
-    private var dataList: List<PostCategory> = emptyList()
+    private val dataList = MutableLiveData<List<PostCategory>>()
 
     // Singleton
     companion object {
@@ -26,23 +26,17 @@ class MainEntryRepository private constructor() {
         }
     }
 
-    fun getMainPosts(onCompletion: (List<PostCategory>) -> Unit) {
-        if (dataList.isEmpty()) {
-            doAsync {
-                dataList = update()
-                uiThread {
-                    onCompletion(dataList)
-                }
-            }
-        } else {
-            onCompletion(dataList)
-        }
+    fun getPostData() : LiveData<List<PostCategory>> {
+        updateDataList()
+        return dataList
     }
 
-    private fun update(): List<PostCategory> {
-        val document: Document = Jsoup.connect(url).get();
-        dataList = getMainFivePostList(document) + getLatestStoryPostList(document)
-        return dataList
+    private fun updateDataList() {
+        HttpRequest.getRequestWithCallback(url) { _, response ->
+            val htmlBody = response.body()?.string()
+            val document: Document = Jsoup.parse(htmlBody);
+            dataList.postValue(getMainFivePostList(document) + getLatestStoryPostList(document))
+        }
     }
 
     private fun getMainFivePostList(document: Document): List<PostCategory> {

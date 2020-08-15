@@ -2,6 +2,7 @@ package com.unoffical.barcablaugranes.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -10,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.squareup.picasso.Picasso
 import com.unoffical.barcablaugranes.R
 import com.unoffical.barcablaugranes.model.PostCategory
-import com.unoffical.barcablaugranes.repository.MainEntryRepository
 import com.unoffical.barcablaugranes.viewmodels.MainEntryPageViewModel
 
 
@@ -86,15 +86,20 @@ class MainEntryPageFragment : Fragment(R.layout.fragment_main_entry_page) {
         authorTextView?.text = "By ${postInfo.author}"
         commentsTextView?.text = "${postInfo.commentsCount} Comments"
 
-        // Attach the link of the post to the card view
-        tableElement.tag = postInfo.linkToPost
+        // Attach a bundle with title and link url
+        val bundle = Bundle()
+        bundle.putString(SimplePostPageFragment.BUNDLE_TITLE, postInfo.title)
+        bundle.putString(SimplePostPageFragment.BUNDLE_URL, postInfo.linkToPost)
+        tableElement.tag = bundle
 
         tableRow.addView(tableElement)
         tableElement.setOnClickListener {
             parentFragmentManager.beginTransaction().apply {
                 val postPageFragment = SimplePostPageFragment()
+                // attach bundle to fragment
+                postPageFragment.arguments = it.tag as Bundle
 
-                this.replace(R.id.fragment_container, postPageFragment, it.tag as String)
+                this.replace(R.id.fragment_container, postPageFragment)
                 this.addToBackStack(null)
                 commit()
             }
