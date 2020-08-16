@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ProgressBar
@@ -16,40 +15,41 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.unoffical.barcablaugranes.R
 import com.unoffical.barcablaugranes.model.Comment
-import com.unoffical.barcablaugranes.repository.PostPageRepository
 import com.unoffical.barcablaugranes.viewmodels.PostPageViewModel
 import com.unoffical.barcablaugranes.viewmodels.PostPageViewModelFactory
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.lang.Exception
 
 
 class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
 
     companion object {
-        val BUNDLE_TITLE = "BUNDLE_TITLE"
-        val BUNDLE_URL = "BUNDLE_URL"
+        const val BUNDLE_TITLE = "BUNDLE_TITLE"
+        const val BUNDLE_URL = "BUNDLE_URL"
     }
 
     private lateinit var progressBar: ProgressBar
     private lateinit var parentView: View
-    private lateinit var tableLayout: TableLayout
+    private lateinit var pContentTableLayout: TableLayout
+    private lateinit var commentsTableLayout: TableLayout
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressBar = view.findViewById(R.id.progress_bar)
         parentView = view
-        tableLayout = view.findViewById(R.id.post_page_table_layout)
+        pContentTableLayout = view.findViewById(R.id.post_p_content_table_layout)
+        commentsTableLayout = view.findViewById(R.id.post_page_table_layout)
+
         val title: String = requireArguments().get(BUNDLE_TITLE) as String
         val url: String = requireArguments().get(BUNDLE_URL) as String
 
         val postPageViewModel = ViewModelProviders.of(this, PostPageViewModelFactory(url))
             .get(PostPageViewModel::class.java)
         postPageViewModel.htmlContentLiveData.observe(viewLifecycleOwner, Observer {
-            val contentHtml: Spanned = fromHtml(it)
+            // val contentHtml: Spanned = fromHtml(it)
             // set text view to post content
             view.findViewById<TextView>(R.id.post_title_text_view).text = title
-            view.findViewById<TextView>(R.id.post_content_text_view).text = contentHtml
+            addPContentToTableLayout(it)
         })
 
         postPageViewModel.commentsLiveData.observe(viewLifecycleOwner, Observer {
@@ -98,8 +98,10 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
 
     private fun initialiseTableLayout(comments: List<Comment>) {
         for(comment in comments) {
+            if(comment.depth == 1)
+                continue
             val tableRow = inflatePostCommentCardView(comment)
-            tableLayout.addView(tableRow)
+            commentsTableLayout.addView(tableRow)
         }
     }
 
@@ -118,5 +120,15 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
         tableRow.addView(tableElement)
 
         return tableRow
+    }
+
+    private fun addPContentToTableLayout(pList: List<String>) {
+        for(p in pList) {
+            val tableRow = TableRow(context)
+            val tableElement = layoutInflater.inflate(R.layout.p_text_view, tableRow, false)
+            tableElement.findViewById<TextView>(R.id.p_text_view).text = p
+            tableRow.addView(tableElement)
+            pContentTableLayout.addView(tableRow)
+        }
     }
 }

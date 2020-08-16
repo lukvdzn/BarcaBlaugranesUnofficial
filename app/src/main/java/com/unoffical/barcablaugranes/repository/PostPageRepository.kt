@@ -1,6 +1,5 @@
 package com.unoffical.barcablaugranes.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -13,12 +12,12 @@ import org.jsoup.nodes.Element
 
 class PostPageRepository (private val url:String) {
 
-    private val comment_url_template = "https://www.barcablaugranes.com/comments/load_comments/"
+    private val commentUrlTemplate = "https://www.barcablaugranes.com/comments/load_comments/"
     private lateinit var commentUrl: String
-    val htmlContentLiveData = MutableLiveData<String>()
+    val htmlContentLiveData = MutableLiveData<List<String>>()
     val commentsLiveData = MutableLiveData<List<Comment>>()
 
-    fun getHtmlContentLiveData(): LiveData<String> {
+    fun getHtmlContentLiveData(): LiveData<List<String>> {
         updateHtmlContentLiveData()
         return htmlContentLiveData
     }
@@ -27,7 +26,7 @@ class PostPageRepository (private val url:String) {
         return commentsLiveData
     }
 
-    fun updateHtmlContentLiveData() {
+    private fun updateHtmlContentLiveData() {
         HttpRequest.getRequestWithCallback(url) { _, response ->
             val htmlBody = response.body()?.string()
             val document: Document = Jsoup.parse(htmlBody)
@@ -39,16 +38,20 @@ class PostPageRepository (private val url:String) {
             val commentsId = commentsIdTag?.attr("data-entry-admin")
 
             // create comments url request for this post
-            commentUrl = comment_url_template + commentsId
+            commentUrl = commentUrlTemplate + commentsId
             // Update comment live data
             updateCommentLiveData()
 
+            val pTags = document.selectFirst(contentTag)
+                ?.select("p")
+                ?.map { it.text() } ?: emptyList<String>()
+
             // return html string for post content
-            htmlContentLiveData.postValue(document.selectFirst(contentTag)?.run { this.html() } ?: "")
+            htmlContentLiveData.postValue(pTags)
         }
     }
 
-    fun updateCommentLiveData() {
+    private fun updateCommentLiveData() {
         HttpRequest.getRequestWithCallback(commentUrl, headers = Headers
             .of(mutableMapOf("Accept" to "application/json",
                 "Accept-Language" to "en-US"))) { _, response ->

@@ -9,7 +9,7 @@ class PostPageViewModel(private val url: String) : ViewModel() {
 
 
     private val postPageRepository = PostPageRepository(url)
-    var htmlContentLiveData: LiveData<String>
+    var htmlContentLiveData: LiveData<List<String>>
     var commentsLiveData: LiveData<List<Comment>>
 
     init {
