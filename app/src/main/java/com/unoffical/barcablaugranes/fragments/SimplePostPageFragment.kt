@@ -6,15 +6,15 @@ import android.view.View
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.unoffical.barcablaugranes.R
-import com.unoffical.barcablaugranes.adapter.CommentExpandableAdapter
-import com.unoffical.barcablaugranes.model.Comment
-import com.unoffical.barcablaugranes.model.buildCommentTree
+import com.unoffical.barcablaugranes.adapter.CommentsAdapter
 import com.unoffical.barcablaugranes.viewmodels.PostPageViewModel
 import com.unoffical.barcablaugranes.viewmodels.PostPageViewModelFactory
 
 
-class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
+class SimplePostPageFragment : Fragment(R.layout.fragment_post_page) {
 
     companion object {
         const val BUNDLE_TITLE = "BUNDLE_TITLE"
@@ -24,14 +24,15 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
     private lateinit var progressBar: ProgressBar
     private lateinit var parentView: View
     private lateinit var pContentTableLayout: TableLayout
-    private lateinit var commentsExpListView: ExpandableListView
+    private lateinit var mCommentsRecyclerView: RecyclerView
+    private lateinit var viewManager: RecyclerView.LayoutManager
+    private lateinit var viewAdapter: CommentsAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressBar = view.findViewById(R.id.progress_bar)
         parentView = view
         pContentTableLayout = view.findViewById(R.id.post_p_content_table_layout)
-        commentsExpListView = view.findViewById(R.id.post_comments_exp_list_view)
 
         val title: String = requireArguments().get(BUNDLE_TITLE) as String
         val url: String = requireArguments().get(BUNDLE_URL) as String
@@ -45,8 +46,13 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
         })
 
         postPageViewModel.commentsLiveData.observe(viewLifecycleOwner, Observer {
-            val commentsAdapter = CommentExpandableAdapter(requireContext(), it)
-            commentsExpListView.setAdapter(commentsAdapter)
+            viewManager = LinearLayoutManager(context)
+            viewAdapter = CommentsAdapter(it.toMutableList())
+            mCommentsRecyclerView = view.findViewById<RecyclerView>(
+                R.id.fragment_post_page_recyclerview).apply {
+                layoutManager = viewManager
+                adapter = viewAdapter
+            }
             // make "Comments" text visible
             view.findViewById<TextView>(R.id.comments_literal).visibility = View.VISIBLE
             destroyProgressBar()

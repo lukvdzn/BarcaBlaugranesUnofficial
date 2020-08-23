@@ -5,13 +5,14 @@ import java.util.*
 
 data class Comment(@SerializedName(value = "id") val id: String = "",
                    @SerializedName(value = "parent_id") val parentId: String? = null,
-                   @SerializedName(value = "body") val body: String = "",
-                   @SerializedName(value = "title") val title: String = "",
+                   @SerializedName(value = "body") val body: String? = null,
+                   @SerializedName(value = "title") val title: String? = null,
                    @SerializedName(value = "username") val username: String = "",
                    @SerializedName(value = "created_on_short") val createdOn: String = "",
                    @SerializedName(value = "ancestry") val ancestry: String = "",
-                   @SerializedName(value = "depth") val depth: Int = 0,
-                   var children: MutableList<Comment> = mutableListOf())
+                   @SerializedName(value = "depth") val depth: Int = 1,
+                   var children: MutableList<Comment> = mutableListOf(),
+                   var expanded: Boolean = false)
 
 data class CommentResponse(@SerializedName(value = "success") val success: Boolean = false,
                            @SerializedName(value = "comments") val comments: List<Comment> = emptyList())
