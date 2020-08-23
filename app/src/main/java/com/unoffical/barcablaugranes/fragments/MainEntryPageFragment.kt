@@ -2,7 +2,6 @@ package com.unoffical.barcablaugranes.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.Fragment

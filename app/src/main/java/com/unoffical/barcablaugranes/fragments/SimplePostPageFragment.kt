@@ -1,23 +1,17 @@
 package com.unoffical.barcablaugranes.fragments
 
 import android.os.Bundle
-import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
-import androidx.core.text.HtmlCompat
+import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.unoffical.barcablaugranes.R
+import com.unoffical.barcablaugranes.adapter.CommentExpandableAdapter
 import com.unoffical.barcablaugranes.model.Comment
+import com.unoffical.barcablaugranes.model.buildCommentTree
 import com.unoffical.barcablaugranes.viewmodels.PostPageViewModel
 import com.unoffical.barcablaugranes.viewmodels.PostPageViewModelFactory
-import java.lang.Exception
 
 
 class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
@@ -30,15 +24,14 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
     private lateinit var progressBar: ProgressBar
     private lateinit var parentView: View
     private lateinit var pContentTableLayout: TableLayout
-    private lateinit var commentsTableLayout: TableLayout
-
+    private lateinit var commentsExpListView: ExpandableListView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressBar = view.findViewById(R.id.progress_bar)
         parentView = view
         pContentTableLayout = view.findViewById(R.id.post_p_content_table_layout)
-        commentsTableLayout = view.findViewById(R.id.post_page_table_layout)
+        commentsExpListView = view.findViewById(R.id.post_comments_exp_list_view)
 
         val title: String = requireArguments().get(BUNDLE_TITLE) as String
         val url: String = requireArguments().get(BUNDLE_URL) as String
@@ -46,15 +39,14 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
         val postPageViewModel = ViewModelProviders.of(this, PostPageViewModelFactory(url))
             .get(PostPageViewModel::class.java)
         postPageViewModel.htmlContentLiveData.observe(viewLifecycleOwner, Observer {
-            // val contentHtml: Spanned = fromHtml(it)
             // set text view to post content
             view.findViewById<TextView>(R.id.post_title_text_view).text = title
             addPContentToTableLayout(it)
         })
 
         postPageViewModel.commentsLiveData.observe(viewLifecycleOwner, Observer {
-            // insert comments into table rows
-            initialiseTableLayout(it)
+            val commentsAdapter = CommentExpandableAdapter(requireContext(), it)
+            commentsExpListView.setAdapter(commentsAdapter)
             // make "Comments" text visible
             view.findViewById<TextView>(R.id.comments_literal).visibility = View.VISIBLE
             destroyProgressBar()
@@ -83,43 +75,8 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_simple_post_page) {
         } */
     }
 
-    private fun fromHtml(html: String) : Spanned {
-        return try {
-            Html.fromHtml(html, HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH)
-        } catch (e: Exception) {
-            // Dummy
-            SpannableString("")
-        }
-    }
-
     private fun destroyProgressBar() {
         progressBar.visibility = View.GONE
-    }
-
-    private fun initialiseTableLayout(comments: List<Comment>) {
-        for(comment in comments) {
-            if(comment.depth == 1)
-                continue
-            val tableRow = inflatePostCommentCardView(comment)
-            commentsTableLayout.addView(tableRow)
-        }
-    }
-
-    private fun inflatePostCommentCardView(comment: Comment): TableRow {
-        // Create new row
-        val tableRow = TableRow(context)
-
-        val tableElement = layoutInflater.inflate(R.layout.post_single_comment, tableRow,
-            false)
-
-        tableElement.findViewById<TextView>(R.id.post_single_comment_username).text = comment.username
-        tableElement.findViewById<TextView>(R.id.post_single_comment_created_on).text = comment.createdOn
-        tableElement.findViewById<TextView>(R.id.post_single_comment_content).text = fromHtml(comment.body)
-        tableElement.findViewById<TextView>(R.id.post_single_comment_title).text = fromHtml(comment.title)
-
-        tableRow.addView(tableElement)
-
-        return tableRow
     }
 
     private fun addPContentToTableLayout(pList: List<String>) {

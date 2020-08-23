@@ -3,4 +3,6 @@
 
     <string name="main_five_post_page_transition">transition_main_five_to_post_page</string>
     <string name="comments">Comments</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

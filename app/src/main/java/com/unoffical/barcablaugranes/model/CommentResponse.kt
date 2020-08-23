@@ -1,18 +1,36 @@
 package com.unoffical.barcablaugranes.model
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class Comment(@SerializedName(value = "id") val id: String = "",
-                   @SerializedName(value = "parent_id") val parentId: String = "",
+                   @SerializedName(value = "parent_id") val parentId: String? = null,
                    @SerializedName(value = "body") val body: String = "",
                    @SerializedName(value = "title") val title: String = "",
                    @SerializedName(value = "username") val username: String = "",
                    @SerializedName(value = "created_on_short") val createdOn: String = "",
                    @SerializedName(value = "ancestry") val ancestry: String = "",
-                   @SerializedName(value = "depth") val depth: Int = 0)
+                   @SerializedName(value = "depth") val depth: Int = 0,
+                   var children: MutableList<Comment> = mutableListOf())
 
 data class CommentResponse(@SerializedName(value = "success") val success: Boolean = false,
                            @SerializedName(value = "comments") val comments: List<Comment> = emptyList())
+
+fun buildCommentTree(list:List<Comment>) : List<Comment> {
+    if(list.isNotEmpty()) {
+        val depthMap: SortedMap<Int, List<Comment>> = list.groupBy { it.depth }.toSortedMap()
+        for(depth in 2..depthMap.keys.max()!!) {
+            val levelAbove: List<Comment> = depthMap[depth - 1]!!
+            val currentDepthComments: List<Comment> = depthMap[depth]!!
+            for(child: Comment in currentDepthComments) {
+                levelAbove.find { it.id == child.parentId }!!.children.add(child)
+            }
+        }
+        return depthMap[1]!!
+    }
+    return list
+}
+
 
 /**
 Example Json Response (abbreviated):

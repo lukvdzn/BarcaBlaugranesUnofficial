@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.unoffical.barcablaugranes.model.Comment
 import com.unoffical.barcablaugranes.model.CommentResponse
+import com.unoffical.barcablaugranes.model.buildCommentTree
 import okhttp3.Headers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -57,7 +58,7 @@ class PostPageRepository (private val url:String) {
                 "Accept-Language" to "en-US"))) { _, response ->
             val json = response.body()?.string()
             val comments = Gson().fromJson(json, CommentResponse::class.java).comments
-            commentsLiveData.postValue(comments)
+            commentsLiveData.postValue(buildCommentTree(comments))
         }
     }
 }
