@@ -15,8 +15,8 @@ class PostPageRepository (private val url:String) {
 
     private val commentUrlTemplate = "https://www.barcablaugranes.com/comments/load_comments/"
     private lateinit var commentUrl: String
-    val htmlContentLiveData = MutableLiveData<List<String>>()
-    val commentsLiveData = MutableLiveData<List<Comment>>()
+    private val htmlContentLiveData = MutableLiveData<List<String>>()
+    private val commentsLiveData = MutableLiveData<List<Comment>>()
 
     fun getHtmlContentLiveData(): LiveData<List<String>> {
         updateHtmlContentLiveData()

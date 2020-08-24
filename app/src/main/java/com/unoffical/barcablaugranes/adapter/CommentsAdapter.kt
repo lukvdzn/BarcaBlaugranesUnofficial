@@ -27,9 +27,10 @@ class CommentsAdapter(private val comments: MutableList<Comment>) :
 
     override fun onBindViewHolder(holder: CommentsViewHolder, position: Int) {
         val view = holder.view
+
         // set padding for comment indentation
         val scale: Float = holder.view.resources.displayMetrics.density
-        val dp = 25 * (comments[position].depth - 1)
+        val dp = 15 * (comments[position].depth - 1)
         view.setPadding((dp * scale + 0.5f).toInt(), 0, 0, 0)
 
         comments[position].apply {
@@ -42,23 +43,27 @@ class CommentsAdapter(private val comments: MutableList<Comment>) :
                 else contentTextView.text = fromHtml(this.body)
             if(this.title == null) titleTextView.visibility = View.GONE
                 else titleTextView.text = fromHtml(this.title)
+
+            // attach current comment as a tag to the view
+            view.tag = this
         }
 
         // When comment clicked, inflate children comments
         view.setOnClickListener {
-            val parentComment = comments[position]
+            val parentComment = it.tag as Comment
+            val currentPosition: Int = comments.indexOf(parentComment)
             val childrenComments = parentComment.children
             if(childrenComments.isNotEmpty()) {
                 if(parentComment.expanded) {
                     for(child in childrenComments) {
-                        comments.removeAt(position + 1)
+                        comments.removeAt(currentPosition + 1)
                     }
                     parentComment.expanded = false
-                    notifyItemRangeRemoved(position + 1, childrenComments.size)
+                    notifyItemRangeRemoved(currentPosition + 1, childrenComments.size)
                 } else {
                     parentComment.expanded = true
-                    comments.addAll(position + 1, childrenComments)
-                    notifyItemRangeInserted(position + 1, childrenComments.size)
+                    comments.addAll(currentPosition + 1, childrenComments)
+                    notifyItemRangeInserted(currentPosition + 1, childrenComments.size)
                 }
             }
         }

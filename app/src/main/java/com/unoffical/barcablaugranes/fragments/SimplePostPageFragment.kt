@@ -57,28 +57,6 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_post_page) {
             view.findViewById<TextView>(R.id.comments_literal).visibility = View.VISIBLE
             destroyProgressBar()
         })
-
-        /*
-        doAsync {
-            // Set up parser
-            val postPageRepository = PostPageRepository.getInstance(tag ?: "")
-
-            // Get Page Content
-            val content: String = postPageRepository.getContentFromUrl()
-            val html: Spanned = fromHtml(content)
-            // Get Json Comments
-            val comments: List<Comment> = postPageRepository.getCommentsFromJson()
-
-            uiThread {
-                // set text view to post content
-                view.findViewById<TextView>(R.id.post_content_text_view).text = html
-                // insert comments into table rows
-                initialiseTableLayout(comments)
-                // make "Comments" text visible
-                view.findViewById<TextView>(R.id.comments_literal).visibility = View.VISIBLE
-                destroyProgressBar()
-            }
-        } */
     }
 
     private fun destroyProgressBar() {

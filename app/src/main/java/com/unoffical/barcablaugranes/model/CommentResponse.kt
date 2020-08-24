@@ -19,6 +19,7 @@ data class CommentResponse(@SerializedName(value = "success") val success: Boole
 
 fun buildCommentTree(list:List<Comment>) : List<Comment> {
     if(list.isNotEmpty()) {
+        // Divide comments into groups by depth of comments
         val depthMap: SortedMap<Int, List<Comment>> = list.groupBy { it.depth }.toSortedMap()
         for(depth in 2..depthMap.keys.max()!!) {
             val levelAbove: List<Comment> = depthMap[depth - 1]!!
