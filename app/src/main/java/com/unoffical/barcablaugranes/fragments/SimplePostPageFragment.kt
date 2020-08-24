@@ -53,8 +53,6 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_post_page) {
                 layoutManager = viewManager
                 adapter = viewAdapter
             }
-            // make "Comments" text visible
-            view.findViewById<TextView>(R.id.comments_literal).visibility = View.VISIBLE
             destroyProgressBar()
         })
     }

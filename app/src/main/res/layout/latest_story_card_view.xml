@@ -14,18 +14,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-        <!-- IMAGE PREVIEW IMAGE VIEW
-        <ImageView
-            android:id="@+id/img_preview_image_view"
-            android:layout_width="170dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" /> -->
-
+        android:layout_height="match_parent"
+        android:padding="5dp">
 
         <!-- POST TITLE TEXT VIEW -->
         <TextView

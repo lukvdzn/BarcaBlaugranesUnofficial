@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorDarkBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include layout="@layout/progress_bar"/>
@@ -27,7 +26,6 @@
                 android:layout_margin="10dp"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:textColor="@android:color/white"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Text Content Paragraphs Table Layout -->
@@ -39,25 +37,14 @@
                 android:stretchColumns="*"
                 app:layout_constraintTop_toBottomOf="@id/post_title_text_view"/>
 
-            <TextView
-                android:id="@+id/comments_literal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:layout_constraintTop_toBottomOf="@id/post_p_content_table_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/comments"
-                android:visibility="gone"
-                android:textSize="20sp"
-                android:textColor="@android:color/white"/>
-
             <!-- Comment Recycler ListView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/fragment_post_page_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                app:layout_constraintTop_toBottomOf="@id/comments_literal"/>
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/post_p_content_table_layout"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,7 +4,6 @@
     <color name="colorPrimaryDark">#007ac1</color>
     <color name="colorAccent">#67daff</color>
 
-    <color name="colorDarkBackground">#212121</color>
     <color name="colorTextMainPostTitle">#000</color>
     <color name="colorSubTextPost">#2C2C2C</color>
     <color name="colorTextMainPostAuthor">#bdbdbd</color>
