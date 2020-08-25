@@ -24,9 +24,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:textSize="18sp"
-                android:gravity="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Sub Title Text View -->
+            <TextView
+                android:id="@+id/post_sub_title_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
+                android:alpha=".7"
+                android:textStyle="italic"
+                app:layout_constraintTop_toBottomOf="@id/post_title_text_view" />
+
+            <!-- Author Text View -->
+            <TextView
+                android:id="@+id/post_page_author_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="12sp"
+                android:alpha=".7"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_sub_title_text_view" />
+
+            <!-- Date Text View -->
+            <TextView
+                android:id="@+id/post_page_date_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="12sp"
+                android:alpha=".7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_sub_title_text_view" />
+
+            <!-- Image View -->
+            <ImageView
+                android:id="@+id/post_page_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/post_page_author_text_view"
+                android:contentDescription="@string/image_of_post" />
 
             <!-- Text Content Paragraphs Table Layout -->
             <TableLayout
@@ -35,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:stretchColumns="*"
-                app:layout_constraintTop_toBottomOf="@id/post_title_text_view"/>
+                app:layout_constraintTop_toBottomOf="@id/post_page_image_view"/>
 
             <!-- Comment Recycler ListView -->
             <androidx.recyclerview.widget.RecyclerView

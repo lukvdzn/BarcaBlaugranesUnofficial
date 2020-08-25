@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.unoffical.barcablaugranes.R
 import com.unoffical.barcablaugranes.adapter.CommentsAdapter
 import com.unoffical.barcablaugranes.viewmodels.PostPageViewModel
@@ -34,15 +35,23 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_post_page) {
         parentView = view
         pContentTableLayout = view.findViewById(R.id.post_p_content_table_layout)
 
-        val title: String = requireArguments().get(BUNDLE_TITLE) as String
         val url: String = requireArguments().get(BUNDLE_URL) as String
 
         val postPageViewModel = ViewModelProviders.of(this, PostPageViewModelFactory(url))
             .get(PostPageViewModel::class.java)
-        postPageViewModel.htmlContentLiveData.observe(viewLifecycleOwner, Observer {
-            // set text view to post content
-            view.findViewById<TextView>(R.id.post_title_text_view).text = title
-            addPContentToTableLayout(it)
+        postPageViewModel.postLiveData.observe(viewLifecycleOwner, Observer {
+            // set text view contents
+            view.findViewById<TextView>(R.id.post_title_text_view).text = it.title
+            view.findViewById<TextView>(R.id.post_sub_title_text_view).text = it.subTitle
+            view.findViewById<TextView>(R.id.post_page_author_text_view).text = "By " + it.author
+            view.findViewById<TextView>(R.id.post_page_date_text_view).text = it.date
+
+            // load image into image view with picasso
+            val imageView = view.findViewById<ImageView>(R.id.post_page_image_view)
+            Picasso.get().load(it.imageUrl).into(imageView)
+
+            // update post content table layout
+            addPContentToTableLayout(it.content)
         })
 
         postPageViewModel.commentsLiveData.observe(viewLifecycleOwner, Observer {
