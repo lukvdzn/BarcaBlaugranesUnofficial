@@ -36,6 +36,7 @@ class PostPageRepository (private val url:String) {
             val authorCss = "span.c-byline__author-name"
             val dateCss = "time.c-byline__item"
             val pictureCss = "picture.c-picture"
+            val imagePublisherCss = "span.e-image__meta"
 
             val postDetails: PostDetails = response.body()?.string()?.run {
                 val document: Document = Jsoup.parse(this)
@@ -50,7 +51,10 @@ class PostPageRepository (private val url:String) {
 
                 val pTags = document.selectFirst(contentCss)
                     ?.select("p")
-                    ?.map { it.text() ?: "" } ?: emptyList()
+                    ?.map {
+                        val temp = it.html().replace("<br>", "$$$")
+                        Jsoup.parse(temp).body().text().replace("$$$", "\n")}
+                    ?: emptyList()
 
                 // retrieve first image link Example of Image Link
                 /*Example of Image source set, second with 620 pixels width is needed
@@ -64,9 +68,11 @@ class PostPageRepository (private val url:String) {
                     ?.takeWhile { char -> char != ' ' } // take link
                     ?: ""
 
+                val imagePublisher: String = document.selectFirst(imagePublisherCss)?.text() ?: ""
+
                 val data: List<String> = listOf(titleCss, subTitleCss, authorCss, dateCss)
                     .map { document.selectFirst(it)?.text() ?: "" }
-                PostDetails(data[0], data[1], data[2], data[3], imageLink, pTags)
+                PostDetails(data[0], data[1], data[2], data[3], imageLink, imagePublisher, pTags)
             } ?: PostDetails()
 
             // return html string for post content

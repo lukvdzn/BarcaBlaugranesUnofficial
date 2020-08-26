@@ -11,4 +11,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--  android:id="@+id/post_page_author_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="12sp"
+                android:alpha=".7"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_sub_title_text_view" /> -->
+
+    <style name="SmallDetailTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:alpha">.7</item>
+    </style>
+
 </resources>

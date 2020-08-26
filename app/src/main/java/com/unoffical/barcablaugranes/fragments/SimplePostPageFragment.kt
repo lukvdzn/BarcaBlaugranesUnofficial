@@ -18,7 +18,6 @@ import com.unoffical.barcablaugranes.viewmodels.PostPageViewModelFactory
 class SimplePostPageFragment : Fragment(R.layout.fragment_post_page) {
 
     companion object {
-        const val BUNDLE_TITLE = "BUNDLE_TITLE"
         const val BUNDLE_URL = "BUNDLE_URL"
     }
 
@@ -37,17 +36,20 @@ class SimplePostPageFragment : Fragment(R.layout.fragment_post_page) {
 
         val url: String = requireArguments().get(BUNDLE_URL) as String
 
-        val postPageViewModel = ViewModelProviders.of(this, PostPageViewModelFactory(url))
+        val postPageViewModel = ViewModelProviders
+            .of(this, PostPageViewModelFactory(url))
             .get(PostPageViewModel::class.java)
+
         postPageViewModel.postLiveData.observe(viewLifecycleOwner, Observer {
             // set text view contents
             view.findViewById<TextView>(R.id.post_title_text_view).text = it.title
             view.findViewById<TextView>(R.id.post_sub_title_text_view).text = it.subTitle
             view.findViewById<TextView>(R.id.post_page_author_text_view).text = "By " + it.author
             view.findViewById<TextView>(R.id.post_page_date_text_view).text = it.date
+            view.findViewById<TextView>(R.id.post_image_publisher_text_view).text = it.imagePublisher
 
             // load image into image view with picasso
-            val imageView = view.findViewById<ImageView>(R.id.post_page_image_view)
+            val imageView = view.findViewById<ImageView>(R.id.post_custom_page_image_view)
             Picasso.get().load(it.imageUrl).into(imageView)
 
             // update post content table layout

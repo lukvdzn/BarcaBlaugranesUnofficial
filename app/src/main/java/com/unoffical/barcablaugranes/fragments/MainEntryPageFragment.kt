@@ -85,9 +85,8 @@ class MainEntryPageFragment : Fragment(R.layout.fragment_main_entry_page) {
         authorTextView?.text = "By ${postInfo.author}"
         commentsTextView?.text = "${postInfo.commentsCount} Comments"
 
-        // Attach a bundle with title and link url
+        // Attach a bundle with link url
         val bundle = Bundle()
-        bundle.putString(SimplePostPageFragment.BUNDLE_TITLE, postInfo.title)
         bundle.putString(SimplePostPageFragment.BUNDLE_URL, postInfo.linkToPost)
         tableElement.tag = bundle
 
