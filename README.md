@@ -1,4 +1,7 @@
 # BarcaBlaugranesUnofficial
 A simple App Portable in Kotlin for https://www.barcablaugranes.com/
-Demos:
-![Sample gif](bb.gif)
+Start Page with main and older posts:
+![Start Page](/images/screenshot_main.png)
+
+Single post page:
+![Single Post](/images/screenshot_post.png)
